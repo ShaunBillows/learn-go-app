@@ -16,8 +16,16 @@
   </ul>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { defineComponent, defineProps } from "vue";
+
+// Ex: Without interface
+
+// const props = defineProps({
+//   msg: { type: String, required: true },
+//   answers: { type: Array, required: true },
+//   answerQuestion: { type: Function, required: true },
+// });
 
 interface Answer {
   text: string;
@@ -25,32 +33,18 @@ interface Answer {
   clicked: boolean;
 }
 
-export default defineComponent({
-  name: "CurrentAnswers",
-  props: {
-    msg: String,
-    answers: Array,
-    getQuestion: {
-      type: Function,
-      required: true,
-    },
-    answerQuestion: {
-      type: Function,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      counter: 0,
-    };
-  },
-  methods: {
-    clickAnswer(answer: Answer) {
-      this.answerQuestion(answer);
-      answer["clicked"] = true;
-    },
-  },
-});
+interface Props {
+  msg: string;
+  answers: Answer[];
+  answerQuestion: (answer: Answer) => void;
+}
+
+const props = defineProps<Props>();
+
+const clickAnswer = (answer: Answer) => {
+  props.answerQuestion(answer);
+  answer["clicked"] = true;
+};
 </script>
 
 <style scoped>
@@ -63,6 +57,7 @@ export default defineComponent({
   max-width: 1100px;
   min-height: 300px;
 }
+
 .answer {
   padding: 2rem;
   border: 1px solid black;
@@ -72,9 +67,11 @@ export default defineComponent({
   color: #252525;
   border-radius: 8px;
 }
+
 .red {
   background-color: #f44336;
 }
+
 .green {
   background-color: #4caf50;
 }
